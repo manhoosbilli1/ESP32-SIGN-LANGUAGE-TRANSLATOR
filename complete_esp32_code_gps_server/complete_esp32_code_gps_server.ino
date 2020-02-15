@@ -1,5 +1,4 @@
 #include <TinyGPS++.h>
-#include <HardwareSerial.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WebServer.h>
@@ -9,13 +8,10 @@
 
 const char* ssid = "Mi A2 Lite-Shoaib";
 const char* password = "D01234567890";
-int rx = 16;
-int tx = 17;
+#define RXD2 16
+#define TXD2 17
 TinyGPSPlus gps;
-HardwareSerial gpsSerial(3);
 WebServer server(80);
-
-const int led = 2;
 
 float long_val = 22.2445;                                       //these are the values you need to change..just throw in real gps value into this variable and the program should do the rest
 float lat_val = 12.224;
@@ -78,7 +74,7 @@ void handleNotFound() {
 }
 
 void setup() {
-  gpsSerial.begin(9600);
+  Serial2.begin(9600,SERIAL_8N1, RXD2, TXD2);      //gps
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
   Serial.begin(115200);
@@ -114,8 +110,8 @@ void setup() {
 }
 
 void loop(void) {
-  while (gpsSerial.available() > 0) {
-    if (gps.encode(gpsSerial.read())) {
+  while (Serial2.available() > 0) {
+    if (gps.encode(Serial2.read())) {
       displayInfo();
     }
   }
@@ -128,12 +124,12 @@ void displayInfo()
     lat_val = gps.location.lat();
     long_val = gps.location.lng();
 
-    lcd.setCursor(0, 0);
-    lcd.print("Latitude: ");
-    lcd.print(lat_val, 6);
-    lcd.setCursor(0, 1);
-    lcd.print("Longitude: ");
-    lcd.print(lat_val, 6);
+    Serial.setCursor(0, 0);
+    Serial.print("Latitude: ");
+    Serial.print(lat_val, 6);
+    Serial.setCursor(0, 1);
+    Serial.print("Longitude: ");
+    Serial.print(lat_val, 6);
     Serial.print("Latitude: ");
     Serial.println(gps.location.lat(), 6);
     Serial.print("Longitude: ");
