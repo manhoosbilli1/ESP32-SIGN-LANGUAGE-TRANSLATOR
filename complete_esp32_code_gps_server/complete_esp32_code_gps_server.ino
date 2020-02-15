@@ -5,6 +5,8 @@
 #include <WebServer.h>
 #include <ESPmDNS.h>
 
+//type "esp/" in browser search bar
+
 const char* ssid = "Mi A2 Lite-Shoaib";
 const char* password = "D01234567890";
 int rx = 16;
