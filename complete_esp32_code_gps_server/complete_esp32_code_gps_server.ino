@@ -3,7 +3,8 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
-#include <HardwareSerial.h>
+#include <SoftwareSerial.h>
+SoftwareSerial arduino(34, 35, false, 256);
 //type "esp/" in browser search bar
 
 const char* ssid = "Mi A2 Lite-Shoaib";
@@ -13,7 +14,7 @@ const char* password = "D01234567890";
 HardwareSerial GPSserial(2);
 TinyGPSPlus gps;
 WebServer server(80);
-
+String command;
 float long_val = 22.2445;                                       //these are the values you need to change..just throw in real gps value into this variable and the program should do the rest
 float lat_val = 12.224;
 
@@ -41,11 +42,14 @@ String SendHTML(float long_val, float lat_val) {                 //main html pag
   ptr += "<body>\n";
   ptr += "<div id=\"webpage\">\n";
   ptr += "<h1>GPS DATA LOGGER</h1>\n";
-
+  //String latitude = String(lat,6);
+  //String longitude = String(lon,6);
   ptr += "<p>Longitude: ";
   ptr += long_val;
   ptr += "<p>Latitude: ";
   ptr += lat_val;
+  ptr += "<p>COMMAND: ";
+  ptr += command;
 
   ptr += "</div>\n";
   ptr += "</body>\n";
@@ -75,7 +79,8 @@ void handleNotFound() {
 }
 
 void setup() {
-  GPSserial.begin(9600,SERIAL_8N1, RXD2, TXD2);      //gps
+  GPSserial.begin(9600, SERIAL_8N1, RXD2, TXD2);     //gps
+  arduino.begin(9600);
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
   Serial.begin(115200);
@@ -111,29 +116,16 @@ void setup() {
 }
 
 void loop(void) {
+  if (arduino.available()) {
+    command = Serial.readString();
+  }
   while (GPSserial.available() > 0) {
     if (gps.encode(GPSserial.read())) {
-      displayInfo();
+      lat_val = gps.location.lat();
+      lat_val = String(lat_val, 6);
+      long_val = gps.location.lng();
+      long_val = String(long_val, 6);
     }
   }
   server.handleClient();      //upload to the server
-}
-
-void displayInfo()
-{
-  if (gps.location.isValid()) {
-    lat_val = gps.location.lat();
-    long_val = gps.location.lng();
-
-    Serial.setCursor(0, 0);
-    Serial.print("Latitude: ");
-    Serial.print(lat_val, 6);
-    Serial.setCursor(0, 1);
-    Serial.print("Longitude: ");
-    Serial.print(lat_val, 6);
-    Serial.print("Latitude: ");
-    Serial.println(gps.location.lat(), 6);
-    Serial.print("Longitude: ");
-    Serial.println(gps.location.lng(), 6);
-  }
 }
