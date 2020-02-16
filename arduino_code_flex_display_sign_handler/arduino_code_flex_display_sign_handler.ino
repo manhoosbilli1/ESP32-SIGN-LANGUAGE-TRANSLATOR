@@ -61,8 +61,8 @@ void setup() {
 
 
 void loop() {
- 
-readAndPrint();
+
+  readAndPrint();
 
 }
 
@@ -126,29 +126,28 @@ void readAndPrint() {
 
   if (angle3 > 15) finger3 = 1;
   if (angle3 < 12) finger3 = 0;
-  Serial.print(angle1); 
-  Serial.print("    ");
-  Serial.print(angle2);
-  Serial.print("    ");
-  Serial.println(angle3);
   if (finger1 == 1 && finger2 == 1 && finger3 == 0) {  //110
     lcd.setCursor(0, 1);
     lcd.print("BED        ");
+    Serial.println("BED");
     playAudio("bed");                        //play bed.wav
   } else if (finger1 == 1 && finger2 == 0 && finger3 == 1) { //100
     lcd.setCursor(0, 1);
     lcd.print("TEA        ");
+    Serial.println("TEA");
     playAudio("tea");
   } else if (finger1 == 0 && finger2 == 1 && finger3 == 1) { //100
     lcd.setCursor(0, 1);
     lcd.print("FOOD        ");
+    Serial.println("FOOD");
     playAudio("food");
   } else if (finger1 == 1 && finger2 == 0 && finger3 == 0) { //100
     lcd.setCursor(0, 1);
     lcd.print("PEE        ");
+    Serial.println("PEE");
     playAudio("pee");
-  } else if(finger1 == 1 && finger2 == 1 && finger3 == 1) {
-    lcd.setCursor(0,1);
+  } else if (finger1 == 1 && finger2 == 1 && finger3 == 1) {
+    lcd.setCursor(0, 1);
     lcd.print("             ");
   }
 }
