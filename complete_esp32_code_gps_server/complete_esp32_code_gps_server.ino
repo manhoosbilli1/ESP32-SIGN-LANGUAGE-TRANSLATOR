@@ -3,13 +3,14 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
-
+#include <HardwareSerial.h>
 //type "esp/" in browser search bar
 
 const char* ssid = "Mi A2 Lite-Shoaib";
 const char* password = "D01234567890";
 #define RXD2 16
 #define TXD2 17
+HardwareSerial GPSserial(2);
 TinyGPSPlus gps;
 WebServer server(80);
 
@@ -74,7 +75,7 @@ void handleNotFound() {
 }
 
 void setup() {
-  Serial2.begin(9600,SERIAL_8N1, RXD2, TXD2);      //gps
+  GPSserial.begin(9600,SERIAL_8N1, RXD2, TXD2);      //gps
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
   Serial.begin(115200);
@@ -110,8 +111,8 @@ void setup() {
 }
 
 void loop(void) {
-  while (Serial2.available() > 0) {
-    if (gps.encode(Serial2.read())) {
+  while (GPSserial.available() > 0) {
+    if (gps.encode(GPSserial.read())) {
       displayInfo();
     }
   }
