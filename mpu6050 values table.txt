@@ -1,0 +1,4 @@
+vertical fingers palm facing forward =     roll: >-60    pitch: < 0
+palm facing down fingers horizontal wrist facing forward =     roll: >-15 && <0    pitch: <0
+90 degree, palm facing right side and fingers facing forward =     roll: <0    pitch: >-70 
+ 
