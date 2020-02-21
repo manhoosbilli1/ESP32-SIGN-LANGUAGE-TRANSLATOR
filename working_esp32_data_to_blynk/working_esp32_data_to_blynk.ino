@@ -14,45 +14,39 @@ char auth[] = "EcMKFw5c5xLG9FA2K4-VEvyuqnF0kypw";
 char ssid[] = "Mi A2 Lite-Shoaib";
 char pass[] = "D01234567890";
 String command = "BED";
-float latitude = 22.367787;
-float longitude = 01.496638;
-String lat_str;
-String lng_str;
-void checkGPS() {
+float latitude;
+float longitude; 
+
+void uploadData() {
 
   Blynk.virtualWrite(V3, command);
-  Blynk.virtualWrite(V4, lat_str);
-  Blynk.virtualWrite(V5, lng_str);
+  Blynk.virtualWrite(V4, latitude);
+  Blynk.virtualWrite(V5, longitude);
 }
 
 void setup()
 {
   // Debug console
-  ss.begin(9600);
-  Serial.begin(115200);
+  Serial.begin(9600);
+  Serial2.begin(9600);
   pinMode(LED_BUILTIN, OUTPUT); //Set the LED (D8) as an output
   Blynk.begin(auth, ssid, pass);
-  timer.setInterval(1000L, checkGPS);
+  timer.setInterval(1000L, uploadData);
 
 }
 
 void loop()
 {
-  if(arduino.available()) {
-    command = Serial.readString();
+  if (Serial2.available() > 0) {          //GATHER DATA FROM SERIAL PORT
+    char c = Serial.read();
+    if (c == '\n') {             //when the command is finished it will feed that data into the function
+      parseData(command);
+      command = "";                //empty command
+    } else {
+      command += c;                 //else add to the string
+    }
   }
-  while (ss.available() > 0) //while data is available
-    if (gps.encode(ss.read())) //read gps data
-    {
-      if (gps.location.isValid()) //check whether gps location is valid
-      {
-        latitude = gps.location.lat();
-        lat_str = String(latitude , 6); // latitude location is stored in a string
-        longitude = gps.location.lng();
-        lng_str = String(longitude , 6); //longitude location is stored in a string
-      }
-    }
-      Blynk.run();
-      timer.run();
+  Blynk.run();                           //PUSH DATA TO APP 
+  timer.run(); 
 
-    }
+}
