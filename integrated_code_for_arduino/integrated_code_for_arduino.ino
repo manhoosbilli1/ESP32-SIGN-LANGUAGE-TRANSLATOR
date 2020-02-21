@@ -1,11 +1,16 @@
-//libraries 
+#include <LiquidCrystal_I2C.h>
+
+//libraries
+#include "SD.h"
+#include "TMRpcm.h"
+#include "SPI.h"
 
 
 String command, com;
 unsigned long lastTrigger, lastTrigger1, lastTrigger2;             //timers
 float latitude, longitude;                                         //for gps
 bool playedOnce = false;
-
+unsigned int counter,prevCounter;
 //flex sensor
 #define fingerPin1 A0
 const int minimumVal1;
@@ -30,10 +35,10 @@ const int maximumVal5;
 //-------------
 
 
-//audio and sd card
-
+//instantiations and initializations
+#define SD_ChipSelectPin 10
 TMRpcm tmrpcm;
-
+LiquidCrystal lcd(16, 2);
 //---------------
 
 
@@ -45,6 +50,11 @@ void setup() {
   lcd.setCursor(0, 0);
   lcd.print("Command:      ");
   lcd.setCursor(0, 1);
+  if (!SD.begin(SD_ChipSelectPin)) {  // see if the card is present and can be initialized:
+    return;   // don't do anything more if not
+  }
+  tmrpcm.volume(7);
+  tmrpcm.loop(0);                        //turn off audio looping
 
 }
 
