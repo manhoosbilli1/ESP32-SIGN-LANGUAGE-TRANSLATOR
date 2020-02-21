@@ -1,4 +1,4 @@
-void pose_calculator() {
+void poseCalculator() {
 
   //getting ADC reading
   int finger1 = analogRead(fingerPin1);
@@ -18,14 +18,17 @@ void pose_calculator() {
   //add another map if needed... 1 if 90 and 0 if 0; convert to binary
   //comparing values
 
-  if (finger1 == 90 , finger2 == 90 , finger3 == 90 , finger4 == 90, finger5 == 90 ) {        // if all fingers are stretched
-    say("bed");                                                                                  // if counter 0, it wont do anything
+  if (finger1 == 90 , finger2 == 90 , finger3 == 90 , finger4 == 90, finger5 == 90 ) {           // if all fingers are stretched       do nothing
+    playAudio("");   // use the function say to make the arduino speak and do the rest of function
+    //say("BED", "bed.wav");     example
   } else if (finger1 == 0, finger2 == 0, finger3 == 0 , finger4 == 0, finger5 == 0) {
-                                                                                  // triggers a function
+    playAudio("A.wav");
+    lcd.print("BED             ");
+    com = "BED";                                  //A is the command we want to play and show
   } else if (finger1 == 0 , finger2 == 0 , finger3 == 90, finger4 == 90, finger5 == 90) {
-    
-  } else {
-    
+    playAudio("B");
+    lcd.print("TEA             ");
+    com = "TEA";
   }
   //extra commands
   /*else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
@@ -57,6 +60,6 @@ void pose_calculator() {
     }*/
 
 
-  //playing audio and printing to screen
+  //comparing and calculating only
 
 }

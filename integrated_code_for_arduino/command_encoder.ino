@@ -11,5 +11,4 @@ void command_encoder(float latitude, float longitude, String com) {
   command.concat("`");
   command.concat(com);
   command.concat("\n");
-  Serial.print(command);
 }

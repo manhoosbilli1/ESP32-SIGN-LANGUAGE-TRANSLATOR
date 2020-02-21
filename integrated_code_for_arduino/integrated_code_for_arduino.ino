@@ -1,16 +1,20 @@
 #include <LiquidCrystal_I2C.h>
-
-//libraries
+#include <SoftwareSerial.h>
+#include <TinyGPS++.h>
 #include "SD.h"
 #include "TMRpcm.h"
 #include "SPI.h"
 
-                                          //save the wav files with the same same as the command or speech
-String command, com;
-unsigned long lastTrigger, lastTrigger1, lastTrigger2;             //timers
+//save the wav files with the same same as the command or speech
+char *filename = "";
+char *lastFN =""; 
+//other variables
+char*lastS;
+bool cmd1Flag, cmd2Flag,cmd3Flag,cmd4Flag,cmd5Flag,cmd6Flag,playFlag,timerFlag;
+String command, com,lastPath;
+unsigned long lastTrigger,timer;             //timers
 float latitude, longitude;                                         //for gps
-bool playedOnce = false;
-unsigned int counter, prevCounter;
+
 //flex sensor
 #define fingerPin1 A0
 const int minimumVal1;
@@ -37,14 +41,19 @@ const int maximumVal5;
 
 //instantiations and initializations
 #define SD_ChipSelectPin 10
+LiquidCrystal_I2C lcd(0x27,16,2);
 TMRpcm tmrpcm;
-LiquidCrystal lcd(16, 2);
+SoftwareSerial esp(4, 5);   //4rx 5tx
+SoftwareSerial SerialGPS(6, 7); //6rx 7tx
+TinyGPSPlus gps;
 //---------------
 
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  esp.begin(9600);
+  SerialGPS.begin(9600);
   tmrpcm.speakerPin = 9;
   tmrpcm.setVolume(3);
   tmrpcm.loop(0);                        //turn off audio looping
@@ -52,8 +61,8 @@ void setup() {
   lcd.setCursor(0, 0);
   lcd.print("Command:      ");
   lcd.setCursor(0, 1);
-  if (!SD.begin(SD_ChipSelectPin)) {  // see if the card is present and can be initialized:
-    return;   // don't do anything more if not
+  if (!SD.begin(SD_ChipSelectPin)) {
+    return;
   }
 
 
@@ -61,11 +70,10 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  pose_calculator();
-  gps_handler();
-  if (millis() - lastTrigger > 2000) {                            //will continously print to serial every 2 second with new values
+  poseCalculator();                                              //calculates hand pose by measuring flex sensor and assigning it a command..then feeds it to say command which speaks
+  gpsHandler();                                                  //gets lat and long positions
+  if (millis() - lastTrigger > 2000) {                            //will continously print to serial every 2 second with values
     command_encoder(latitude, longitude, com);
     lastTrigger = millis();
   }
-
 }
