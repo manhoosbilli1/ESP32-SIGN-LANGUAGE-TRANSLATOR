@@ -5,12 +5,12 @@
 #include "TMRpcm.h"
 #include "SPI.h"
 
-
+                                          //save the wav files with the same same as the command or speech
 String command, com;
 unsigned long lastTrigger, lastTrigger1, lastTrigger2;             //timers
 float latitude, longitude;                                         //for gps
 bool playedOnce = false;
-unsigned int counter,prevCounter;
+unsigned int counter, prevCounter;
 //flex sensor
 #define fingerPin1 A0
 const int minimumVal1;
@@ -46,6 +46,8 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   tmrpcm.speakerPin = 9;
+  tmrpcm.setVolume(3);
+  tmrpcm.loop(0);                        //turn off audio looping
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
   lcd.print("Command:      ");
@@ -53,13 +55,14 @@ void setup() {
   if (!SD.begin(SD_ChipSelectPin)) {  // see if the card is present and can be initialized:
     return;   // don't do anything more if not
   }
-  tmrpcm.volume(7);
-  tmrpcm.loop(0);                        //turn off audio looping
+
 
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+  pose_calculator();
+  gps_handler();
   if (millis() - lastTrigger > 2000) {                            //will continously print to serial every 2 second with new values
     command_encoder(latitude, longitude, com);
     lastTrigger = millis();
