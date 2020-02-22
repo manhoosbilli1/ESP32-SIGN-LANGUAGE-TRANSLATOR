@@ -4,62 +4,40 @@ void poseCalculator() {
   int finger1 = analogRead(fingerPin1);
   int finger2 = analogRead(fingerPin2);
   int finger3 = analogRead(fingerPin3);
-  int finger4 = analogRead(fingerPin4);
-  int finger5 = analogRead(fingerPin5);
+
+  //add the new code here
+  bool Finger1, Finger2, Finger3;
 
   //mapping values
-  finger1 = map(finger1, minimumVal1, maximumVal1, 0, 90);           //map the values to certain values
-  finger2 = map(finger2, minimumVal2, maximumVal2, 0, 90);
-  finger3 = map(finger3, minimumVal3, maximumVal3, 0, 90);
-  finger4 = map(finger4, minimumVal4, maximumVal4, 0, 90);
-  finger5 = map(finger5, minimumVal5, maximumVal5, 0, 90);
-
-
-  //add another map if needed... 1 if 90 and 0 if 0; convert to binary
-  //comparing values
-
-  if (finger1 == 90 , finger2 == 90 , finger3 == 90 , finger4 == 90, finger5 == 90 ) {           // if all fingers are stretched       do nothing
-    playAudio("");   // use the function say to make the arduino speak and do the rest of function
-    //say("BED", "bed.wav");     example
-  } else if (finger1 == 0, finger2 == 0, finger3 == 0 , finger4 == 0, finger5 == 0) {
-    playAudio("A.wav");
-    lcd.print("BED             ");
-    com = "BED";                                  //A is the command we want to play and show
-  } else if (finger1 == 0 , finger2 == 0 , finger3 == 90, finger4 == 90, finger5 == 90) {
-    playAudio("B");
-    lcd.print("TEA             ");
-    com = "TEA";
+  if (finger1 <= minimumVal1) {
+    Finger1 = 1;
+  } else if (finger1 >= maximumVal1) {
+    Finger1 = 0;
   }
-  //extra commands
-  /*else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
+  if (finger2 <= minimumVal2) {
+    Finger2 = 1;
+  } else if (finger2 >= maximumVal2) {
+    Finger2 = 0;
+  }
+  if (finger3 <= minimumVal3) {
+    Finger3 = 1;
+  } else if (finger3 >= maximumVal3) {
+    Finger3 = 0;
+  }
 
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }else if (finger1 == , finger2 == , finger3 == , finger4 == , finger5 == ){
-
-    }*/
+  if (Finger1 == 1 && Finger2 == 1 && Finger3 == 0) {
+    say("pee");
+  } else if (Finger1 == 0 && Finger2 == 1 && Finger3 == 1) {
+    say("food");
+  } else if (Finger1 == 0 && Finger2 == 1 && Finger3 == 0) {
+    say("bed");
+  } else if (Finger1 == 1 && Finger2 == 0 && Finger3 == 0) {
+    say("sleep");
+  } else if (Finger1 == 1 && Finger2 == 1 && Finger3 == 1) {
+    say("  ");
+  }
 
 
-  //comparing and calculating only
+
 
 }

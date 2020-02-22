@@ -1,4 +1,4 @@
-void gpsHandler() {
+/*void gpsHandler() {
   while (SerialGPS.available() > 0) {
     gps.encode(SerialGPS.read());
     if (gps.location.isUpdated()) {
@@ -6,4 +6,4 @@ void gpsHandler() {
       longitude = gps.location.lng();
     }
   }
-}
+}*/
