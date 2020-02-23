@@ -1,11 +1,10 @@
-#include <LiquidCrystal.h>
-
+#include <LiquidCrystal_I2C.h>
 //mpu 6050 settings
 #include <Wire.h>
 
 
 //lcd
-LiquidCrystal lcd(8, 7, 6, 5, 4, 3);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 //sd and audio
 #include "SD.h"
@@ -45,7 +44,8 @@ bool finger1, finger2, finger3;
 void setup() {
   // put your setup code here, to run once
   tmrpcm.speakerPin = 9;
-  lcd.begin(16, 2);
+  lcd.init();
+  lcd.backlight();
   lcd.setCursor(0, 0);
   lcd.print("Command:      ");
   lcd.setCursor(0, 1);
@@ -56,6 +56,8 @@ void setup() {
     return;   // don't do anything more if not
   }
   tmrpcm.volume(7);
+  tmrpcm.play("A.wav");
+  delay(1000);
 
 }
 
