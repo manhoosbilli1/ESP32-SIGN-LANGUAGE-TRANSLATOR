@@ -106,6 +106,34 @@ void loop() {
   }
 
 }
+void command_encoder(float lati, float longi, String com) {
+  char latitude[12];
+  char longitude[12];
+  esp.print('#');
+  dtostrf(lati, 9, 6, latitude);      //convert to char
+  esp.print(latitude);
+  esp.print(',');
+  dtostrf(longi, 9, 6, longitude);
+  esp.print(longitude);
+  esp.print('`');
+  esp.print(com);
+  esp.print('\n');
+}
+
+void command_encoder(float lati, float longi, String com) {
+  char latitude[12];
+  char longitude[12];
+  esp.print('#');
+  dtostrf(lati, 9, 6, latitude);      //convert to char
+  esp.print(latitude);
+  esp.print(',');
+  dtostrf(longi, 9, 6, longitude);
+  esp.print(longitude);
+  esp.print('`');
+  esp.print(com);
+  esp.print('\n');
+}
+
 
 //this will print to lcd, feed the com string to send to esp, and also say it using speaker
 char* string2char(String command) {
@@ -115,7 +143,7 @@ char* string2char(String command) {
   }
 }
 
-void say(String s) {
+void say(String s) {                  //NEW FUNCTION UNCONFIRMED
   char* filename;
   if (s != lastS) {                      //if command has changed
     String i = s;                        //make a string i concat the space and feed to function
@@ -143,3 +171,47 @@ void say(String s) {
     tmrpcm.stopPlayback();              //stop the music if not already stopped
   }
 }
+
+/*
+void playAudio(String path) {       //turn on flag when you want to play
+                                                        //OLD FUNCTION TESTED AND WORKING WITHOUT SOFTWARESERIAL 
+  if (path != lastPath) {
+    if (path == "tea") cmd1Flag = true;
+    if (path == "food") cmd2Flag = true;
+    if (path == "bed") cmd3Flag = true;
+    if (path == "pee") cmd4Flag = true;
+    if (path == "sleep") cmd5Flag = true;
+    if (path == "cmd6") cmd6Flag = true;
+    if (cmd1Flag) {
+      tmrpcm.play("A.wav");  //for 'ok' sign
+      delay(1000);
+      cmd1Flag = false;
+    }
+    else if (cmd2Flag) {
+      tmrpcm.play("B.wav");    // for 1 sign
+      delay(1000);
+      cmd2Flag = false;
+    }
+    else if (cmd3Flag) {
+      tmrpcm.play("C.wav");
+      delay(1000);
+      cmd3Flag = false;
+    }
+    else if (cmd4Flag) {
+      tmrpcm.play("D.wav");
+      delay(1000);
+      cmd4Flag = false;
+    }
+    else if (cmd5Flag) {
+      tmrpcm.play("E.wav");
+      delay(1000);
+      cmd5Flag = false;
+    }
+    else if (cmd6Flag) {
+      tmrpcm.play("command1.wav");
+      delay(1000);
+      cmd6Flag = false;
+    }
+    lastPath = path;
+  }
+}*/
