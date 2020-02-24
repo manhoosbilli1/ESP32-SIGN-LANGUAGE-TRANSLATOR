@@ -4,6 +4,7 @@
 #include "TMRpcm.h"
 #include "SPI.h"
 #include <Wire.h>
+
 //save the wav files with the same same as the command or speech
 
 bool cmd1Flag, cmd2Flag, cmd3Flag, cmd4Flag, cmd5Flag, cmd6Flag, playFlag, timerFlag;
@@ -34,8 +35,7 @@ int finger1, finger2, finger3;
 #define SD_ChipSelectPin 53
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 TMRpcm tmrpcm;
-//serial2 is esp
-//serial3 is gps
+
 TinyGPSPlus gps;
 bool test = false;
 //---------------
@@ -44,18 +44,14 @@ String path;
 void setup() {
   // put your setup code here, to run once:
   tmrpcm.speakerPin = 11;
-  Serial.begin(9600);
-  Serial1.begin(9600);
+  Serial.begin(9600);    //SERIAL MONITOR
+  Serial1.begin(9600);   //GPS
   Serial3.begin(9600);   //esp
-
-
-  // tmrpcm.loop(0);                        //turn off audio looping
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
   lcd.print("Command:      ");
   lcd.setCursor(0, 1);
-  //tmrpcm.loop(0);
   if (!SD.begin(SD_ChipSelectPin)) {
     return;
   }
@@ -67,7 +63,7 @@ void setup() {
 
 
 void loop() {
-  //getting ADC reading
+  /----------------------------GETS ADC VALUES AND ASSISNS THEM TO BINARY--------------------
   finger1 = analogRead(fingerPin1);
   finger2 = analogRead(fingerPin2);
   finger3 = analogRead(fingerPin3);
@@ -91,15 +87,17 @@ void loop() {
     Finger3 = 0;
   }
 
+  //--------------------------SHOWS FINGERS POSITION ON LCD
+
   lcd.setCursor(9, 0);
   lcd.print(Finger1);
   lcd.print(",");
   lcd.print(Finger2);
   lcd.print(",");
   lcd.print(Finger3);
-  delay(10);
 
-  Serial.println("In loop");
+  //1 IS FINGERS EXTENDED AND FLAT 0 IS FINGERS CURLED AND BENT
+  
   if (Finger1 == 1 && Finger2 == 1 && Finger3 == 1) {
     cmd1Flag = true;
     path = "A.wav";
@@ -117,6 +115,8 @@ void loop() {
     path = "E.wav";
 
   }
+
+  //           ***********************actual code***************************  set lcd to value, prints to serial, and plays the sound
   if (path != lastPath) {
     if (cmd1Flag) {
       lcd.setCursor(0, 1);
@@ -168,12 +168,7 @@ void loop() {
       longitude = gps.location.lng();
     }
   }
-
-}//calculates hand pose by measuring flex sensor and assigning it a command..then feeds it to say command which speaks
-//  gpsHandler();                                                  //gets lat and long positions
-
-
-
+}
 
 void command_encoder(float lati, float longi, String com) {
   char latitude[12];
@@ -188,43 +183,3 @@ void command_encoder(float lati, float longi, String com) {
   Serial3.print(com);
   Serial.print('\n');
 }
-/*
-  //this will print to lcd, feed the com string to send to esp, and also say it using speaker
-  char* string2char(String command) {
-  if (command.length() != 0) {
-    char *p = const_cast<char*>(command.c_str());
-    return p;
-  }
-  }
-
-  void say(String s) {                  //NEW FUNCTION UNCONFIRMED
-  char* filename;
-  if (s != lastS) {                      //if command has changed
-    String i = s;                        //make a string i concat the space and feed to function
-    i += "               ";
-    lcd.setCursor(0, 1);                 //print to lcd
-    lcd.print(i);
-    com = s;
-    String wavPath = s;                  //setting up the filename string here
-    wavPath += ".wav";
-    filename = string2char(wavPath);      //feeding it to filename to convert to char
-    playFlag = true;
-    timerFlag = true;
-    lastS = s;                           //save the current command to compare later
-  }
-  if (playFlag) {
-    if (timerFlag) {                                                                      //DIDNT WORK CAUSE OF FILEPATH CHAR
-      timer = millis();                  //record the time
-      timerFlag = false;
-    }
-    tmrpcm.play(filename);               //if timer expires or if audio is not playing anymore
-    if ((millis() - timer > 1000) || (!tmrpcm.isPlaying())) {        //get out of the loop
-      playFlag = false;
-    }
-  } else {
-    tmrpcm.stopPlayback();              //stop the music if not already stopped
-  }
-  }
-
-  /*
-  void playAudio(String path) {       //turn on flag when you want to play
