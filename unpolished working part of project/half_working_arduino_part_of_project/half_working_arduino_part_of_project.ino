@@ -97,7 +97,6 @@ void loop() {
   lcd.print(Finger2);
   lcd.print(",");
   lcd.print(Finger3);
-  delay(10);
 
   Serial.println("In loop");
   if (Finger1 == 1 && Finger2 == 1 && Finger3 == 1) {
@@ -121,7 +120,7 @@ void loop() {
     if (cmd1Flag) {
       lcd.setCursor(0, 1);
       lcd.print("Command 1         ");
-      com = "command 5";
+      com = "command 1";
       tmrpcm.play("A.wav");
       Serial.print("playing A.wav");
       cmd1Flag = false;
@@ -168,6 +167,7 @@ void loop() {
       longitude = gps.location.lng();
     }
   }
+  delay(500);
 
 }//calculates hand pose by measuring flex sensor and assigning it a command..then feeds it to say command which speaks
 //  gpsHandler();                                                  //gets lat and long positions
@@ -227,4 +227,4 @@ void command_encoder(float lati, float longi, String com) {
   }
 
   /*
-  void playAudio(String path) {       //turn on flag when you want to play
+  void playAudio(String path) {       //turn on flag when you want to play*/

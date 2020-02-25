@@ -9,8 +9,8 @@ char auth[] = "EcMKFw5c5xLG9FA2K4-VEvyuqnF0kypw";
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-char ssid[] = "QMobile LT100";
-char pass[] = "five32822";
+char ssid[] = "Tenda_548A88";
+char pass[] = "shoaibmectec";
 String latitude, longitude, com,COM;
 
 String command;         //using serial 2 to receive data
