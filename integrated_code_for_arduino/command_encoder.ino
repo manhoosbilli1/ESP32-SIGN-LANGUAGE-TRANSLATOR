@@ -1,14 +1,14 @@
 
-void command_encoder(float latitude, float longitude, String com) {
-  String lati = String(latitude, 6);
-  String longi = String(longitude, 6);     //convert float to strings
-
-  //package the data up and encode
-  command = "#";
-  command.concat(lati);
-  command.concat(",");
-  command.concat(longi);
-  command.concat("`");
-  command.concat(com);
-  command.concat("\n");
+void command_encoder(float lati, float longi, String com) {
+   char latitude[12];
+   char longitude[12];
+   esp.print('#');
+   dtostrf(lati, 9,6,latitude);        //convert to char
+   esp.print(latitude);
+   esp.print(',');
+   dtostrf(longi, 9,6,longitude);
+   esp.print(longitude);
+   esp.print('`');
+   esp.print(com);
+   esp.print('\n');
 }
