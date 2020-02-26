@@ -32,7 +32,7 @@ int maximumVal1 = 930;
 int minimumVal2 = 930 ;
 int maximumVal2 = 960 ;
 
-#define fingerPin3 A5
+#define fingerPin3 A7
 int minimumVal3 = 835;
 int maximumVal3 = 865;
 
