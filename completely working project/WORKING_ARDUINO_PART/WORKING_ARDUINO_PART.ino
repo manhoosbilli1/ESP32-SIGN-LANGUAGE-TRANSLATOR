@@ -11,7 +11,7 @@ bool cmd1Flag, cmd2Flag, cmd3Flag, cmd4Flag, cmd5Flag, cmd6Flag, playFlag, timer
 String command = "";
 String com, lastPath, lastS;
 float latitude, longitude;
-unsigned long lastTrigger, lastTrigger1, lastTrigger2, timer;         //timers
+unsigned long lastTrigger, lastTrigger1, lastTrigger2, timer, lastTrigger3;        //timers
 ;
 //flex sensor
 #define fingerPin1 A0
@@ -37,7 +37,6 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 TMRpcm tmrpcm;
 
 TinyGPSPlus gps;
-bool test = false;
 //---------------
 
 String path;
@@ -58,101 +57,99 @@ void setup() {
   delay(100);
   tmrpcm.setVolume(7);
   tmrpcm.quality(0);
-
 }
 
-
 void loop() {
-  /----------------------------GETS ADC VALUES AND ASSISNS THEM TO BINARY--------------------
-  finger1 = analogRead(fingerPin1);
-  finger2 = analogRead(fingerPin2);
-  finger3 = analogRead(fingerPin3);
+  // ----------------------------GETS ADC VALUES AND ASSISNS THEM TO BINARY--------------------
+  if (millis() - lastTrigger3 > 200) {
+    finger1 = analogRead(fingerPin1);
+    finger2 = analogRead(fingerPin2);
+    finger3 = analogRead(fingerPin3);
 
+    //mapping values
+    if (finger1 <= minimumVal1) {
+      Finger1 = 1;
+    } else if (finger1 >= maximumVal1) {
+      Finger1 = 0;
+    }
+    if (finger2 <= minimumVal2) {
+      Finger2 = 1;
+    } else if (finger2 >= maximumVal2) {
+      Finger2 = 0;
+    }
+    if (finger3 <= minimumVal3) {
+      Finger3 = 1;
+    } else if (finger3 >= maximumVal3) {
+      Finger3 = 0;
+    }
 
+    //--------------------------SHOWS FINGERS POSITION ON LCD
 
-  //mapping values
-  if (finger1 <= minimumVal1) {
-    Finger1 = 1;
-  } else if (finger1 >= maximumVal1) {
-    Finger1 = 0;
-  }
-  if (finger2 <= minimumVal2) {
-    Finger2 = 1;
-  } else if (finger2 >= maximumVal2) {
-    Finger2 = 0;
-  }
-  if (finger3 <= minimumVal3) {
-    Finger3 = 1;
-  } else if (finger3 >= maximumVal3) {
-    Finger3 = 0;
-  }
+    lcd.setCursor(9, 0);
+    lcd.print(Finger1);
+    lcd.print(",");
+    lcd.print(Finger2);
+    lcd.print(",");
+    lcd.print(Finger3);
 
-  //--------------------------SHOWS FINGERS POSITION ON LCD
+    //1 IS FINGERS EXTENDED AND FLAT 0 IS FINGERS CURLED AND BENT
+    //assign values to finger positions
 
-  lcd.setCursor(9, 0);
-  lcd.print(Finger1);
-  lcd.print(",");
-  lcd.print(Finger2);
-  lcd.print(",");
-  lcd.print(Finger3);
-
-  //1 IS FINGERS EXTENDED AND FLAT 0 IS FINGERS CURLED AND BENT
-  
-  if (Finger1 == 1 && Finger2 == 1 && Finger3 == 1) {
-    cmd1Flag = true;
-    path = "A.wav";
-  } else if (Finger1 == 0 && Finger2 == 1 && Finger3 == 1) {
-    cmd2Flag = true;
-    path = "B.wav";
-  } else if (Finger1 == 0 && Finger2 == 1 && Finger3 == 0) {
-    cmd3Flag = true;
-    path = "C.wav";
-  } else if (Finger1 == 1 && Finger2 == 0 && Finger3 == 0) {
-    cmd4Flag = true;
-    path = "D.wav";
-  } else if (Finger1 == 0 && Finger2 == 0 && Finger3 == 0) {
-    cmd5Flag = true;
-    path = "E.wav";
-
+    if (Finger1 == 1 && Finger2 == 1 && Finger3 == 1) {
+      cmd1Flag = true;
+      path = "a";
+    } else if (Finger1 == 0 && Finger2 == 1 && Finger3 == 1) {
+      cmd2Flag = true;
+      path = "b";
+    } else if (Finger1 == 0 && Finger2 == 1 && Finger3 == 0) {
+      cmd3Flag = true;
+      path = "c";
+    } else if (Finger1 == 1 && Finger2 == 0 && Finger3 == 0) {
+      cmd4Flag = true;
+      path = "d";
+    } else if (Finger1 == 0 && Finger2 == 0 && Finger3 == 0) {
+      cmd5Flag = true;
+      path = "e";
+    }
+    lastTrigger3 = millis();
   }
 
   //           ***********************actual code***************************  set lcd to value, prints to serial, and plays the sound
   if (path != lastPath) {
-    if (cmd1Flag) {
-      lcd.setCursor(0, 1);
-      lcd.print("Command 1         ");
-      com = "command 5";
-      tmrpcm.play("A.wav");
-      Serial.print("playing A.wav");
-      cmd1Flag = false;
-    } else if (cmd2Flag) {
-      lcd.setCursor(0, 1);
-      lcd.print("Command 2         ");
-      com = "command 2";
-      tmrpcm.play("B.wav");
-      Serial.print("Playing B.wav");
-      cmd2Flag = false;
-    } else if (cmd3Flag) {
-      lcd.setCursor(0, 1);
-      lcd.print("Command 3         ");
-      tmrpcm.play("C.wav");
-      com = "command 3";
-      Serial.print("Playing C.wav");
-      cmd3Flag = false;
-    } else if (cmd4Flag) {
-      lcd.setCursor(0, 1);
-      lcd.print("Command 4         ");
-      com = "command 4";
-      tmrpcm.play("D.wav");
-      Serial.print("Playing D.wav");
-      cmd4Flag = false;
-    } else if (cmd5Flag) {
-      lcd.setCursor(0, 1);
-      lcd.print("Command 5         ");
-      com = "command 5";
-      tmrpcm.play("E.wav");
-      Serial.print("Playing E.wav");
-      cmd5Flag = false;
+    if (!tmrpcm.isPlaying() || (millis() - lastTrigger2 > 500)) {
+      if (cmd1Flag) {
+        lcd.setCursor(0, 1);
+        lcd.print("FOOD           ");
+        com = "FOOD";
+        tmrpcm.play("food.wav");
+        cmd1Flag = false;
+      } else if (cmd2Flag) {
+        lcd.setCursor(0, 1);
+        lcd.print("SLEEP           ");
+        com = "SLEEP";
+        tmrpcm.play("B.wav");
+        Serial.print("Playing B.wav");
+        cmd2Flag = false;
+      } else if (cmd3Flag) {
+        lcd.setCursor(0, 1);
+        lcd.print("PEE         ");
+        tmrpcm.play("C.wav");
+        com = "PEE";
+        cmd3Flag = false;
+      } else if (cmd4Flag) {
+        lcd.setCursor(0, 1);
+        lcd.print("DRINK        ");
+        com = "DRINK";
+        tmrpcm.play("D.wav");
+        cmd4Flag = false;
+      } else if (cmd5Flag) {
+        lcd.setCursor(0, 1);
+        lcd.print("OUTSIDE        ");
+        com = "OUTSIDE";
+        tmrpcm.play("E.wav");
+        cmd5Flag = false;
+      }
+      lastTrigger2 = millis();
     }
     lastPath = path;
   }
