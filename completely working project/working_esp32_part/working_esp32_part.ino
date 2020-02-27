@@ -9,10 +9,11 @@ char auth[] = "EcMKFw5c5xLG9FA2K4-VEvyuqnF0kypw";
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-char ssid[] = "QMobile LT100";
-char pass[] = "five32822";
+char ssid[] = "Shoaib";
+char pass[] = "A0123456789";
 String latitude, longitude, com,COM;
-
+WidgetMap myMap(V0);
+unsigned int move_index = 1;
 String command;         //using serial 2 to receive data
  
 void pushData() {
@@ -20,6 +21,7 @@ void pushData() {
   Blynk.virtualWrite(V3, COM);
   Blynk.virtualWrite(V4, latitude);
   Blynk.virtualWrite(V5, longitude);
+  myMap.location(move_index, latitude, longitude, "GPS_LOCATION");
   Serial.print("Data uploaded");
 }
 void setup() {
