@@ -6,15 +6,29 @@
 #include <Wire.h>
 
 
-//the finger movement assigns an int value to the cmd and we correlate that with the filename and command array so whatever 
-//value cmd is the other char array will choose that index. 
+//the finger movement assigns an int value to the cmd and we correlate that with the filename and command array so whatever
+//value cmd is the other char array will choose that index.
 
 
 int cmd, lastCmd;      // main int value
-char *filename[] = {"", "AA.wav", "BB.wav", "C.wav", "D.wav", "E.wav","FF.wav"};     //last position is going to be null character
-String command[] = {"", "Food", "Sleep", "outside", "Cute", "Open the door","outside"};
+char *filename[] = {"",
+                    "hungry.wav",
+                    "sleep.wav",
+                    "C.wav",
+                    "thirsty.wav",
+                    "alone.wav",
+                    "help.wav"
+                   };     //last position is going to be null character
+String command[] = { "",
+                     "Food",
+                     "Sleep",
+                     "outside",
+                     "THIRSTY",
+                     "Leave me alone",
+                     "HELP"
+                   };
 
-String com, lastPath, lastS;s
+String com, lastPath, lastS;
 float latitude, longitude;
 unsigned long lastTrigger, lastTrigger1, lastTrigger2, timer, lastTrigger3, playingTimer;       //timers
 ;
@@ -65,7 +79,7 @@ void setup() {
 
 void loop() {
   // ----------------------------GETS ADC VALUES AND ASSISNS THEM TO BINARY--------------------
-  
+
   if (millis() - lastTrigger3 > 200) {
     finger1 = analogRead(fingerPin1);
     finger2 = analogRead(fingerPin2);
