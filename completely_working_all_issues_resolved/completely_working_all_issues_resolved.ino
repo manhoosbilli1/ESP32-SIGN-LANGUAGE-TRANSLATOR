@@ -11,10 +11,10 @@
 
 
 int cmd, lastCmd;      // main int value
-char *filename[] = {"", "A.wav", "B.wav", "C.wav", "D.wav", "E.wav","F.wav"};     //last position is going to be null character
-String command[] = {"", "Food", "Sleep", "Drink", "PEE", "important","outside"};
+char *filename[] = {"", "AA.wav", "BB.wav", "C.wav", "D.wav", "E.wav","FF.wav"};     //last position is going to be null character
+String command[] = {"", "Food", "Sleep", "outside", "Cute", "Open the door","outside"};
 
-String com, lastPath, lastS;
+String com, lastPath, lastS;s
 float latitude, longitude;
 unsigned long lastTrigger, lastTrigger1, lastTrigger2, timer, lastTrigger3, playingTimer;       //timers
 ;
@@ -59,7 +59,7 @@ void setup() {
     return;
   }
   delay(100);
-  tmrpcm.setVolume(3 );
+  tmrpcm.setVolume(7);
   tmrpcm.quality(0);
 }
 
